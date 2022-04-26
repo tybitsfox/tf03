@@ -1,0 +1,25 @@
+这是一个通过systemd自动运行的用于获取正确的coretemp所在目录的程序和一个在conky中取得cpu温度的程序
+由于系统启动时/sys/class/hwmon/目录下关于显卡,cpu等硬件设备信息的获取顺序不是固定的。为了正确获得
+cpu温度，编写了iniget，并在systemd中自动启动执行。tf03则用于在conky中调用取得并显示cpu温度。
+
+将iniget加入systemd的方法：
+在/usr/lib/systemd/system/目录下编写iniget.service:
+
+[Unit]
+Description=to get real directory for coretemp
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/iniget
+
+[Install]
+WantedBy=multi-user.target
+
+这是一个最简单的service脚本。完成后执行systemctl enable iniget.service 将target加入/etc/systemd/system/multi-user.target.wants。
+systemctl status iniget 查看服务信息。重启后服务生效
+
+
+
+
+
+
