@@ -22,13 +22,14 @@ int main(int argc,char **argv)
 		if(strncmp(ch,"coretemp",8) == 0) //core
 		{
 			zero(path[1]);
-			snprintf(path[1],sizeof(path[1]),"%s%d/temp1_input",Ddir,i);
+			snprintf(path[1],sizeof(path[1]),"%s%d/temp1_input\n",Ddir,i);
 			continue;
 		}
 		if(strncmp(ch,"amdgpu",6) == 0) //amdgpu
 		{
 			zero(path[2]);
 			snprintf(path[2],sizeof(path[2]),"%s%d/temp1_input",Ddir,i);
+			continue;
 		}
 		if(strncmp(ch,"acpitz",6) == 0) //?? incorrect
 		{
@@ -37,14 +38,12 @@ int main(int argc,char **argv)
 			snprintf(path[2],sizeof(path[2]),"%s%d/temp1_input",Ddir,i);
 			continue;
 		}
-		f=open(SFILE,O_RDWR|O_CREAT,0644);
-		if(f<=0)
-		{return 0;}
-		write(f,path[1],strlen(path[1]));
-		write(f,path[2],strlen(path[2]));
-		close(f);
-		break;
 	}
+	f=open(SFILE,O_RDWR|O_CREAT,0644);
+	if(f<=2)
+		return 0;
+	write(f,path[1],strlen(path[1]));
+	write(f,path[2],strlen(path[2]));
 	return 0;
 }
 
