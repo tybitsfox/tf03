@@ -11,41 +11,49 @@ add:
 	index=3		开源驱动显卡温度
  */
 #define	amd		"amdgpu"
+#define nvidia	"nvi-cmd...forget，add it later"
 
 int main(int argc,char **argv)
 {
-	char ch[512],tmp[32];
+	char ch[512],tmp[32],*c;
 	int f,i,j;
 	if(argc != 2)
 	{
 		printf("Usage:\n%s tempindex\nindex=0: coretemp\nindex=1: amd gputemp\n\
-index=2: nvidia gputemp\nindex=3: opensourc gputemp\n",argv[0]);
+index=2: opensource gputemp\nindex=3: nvidia gputemp\n",argv[0]);
 		return 0;
 	}
-	f=open(SFILE,O_RDONLY);
-	if(f<=0)
-		return 0;
 	zero(ch);
-	i=read(f,ch,sizeof(ch));
-	if(i<=0)
-		goto err_01;
-	close(f);
 	zero(tmp);
 	j=atoi(argv[1]);
 	switch(j)
 	{
 	case 0: //coretemp
+	case 1://amd gputemp
+	case 2://open source gputemp
+		f=open(SFILE,O_RDONLY);
+		if(f<=0)
+			return 0;
+		i=read(f,ch,sizeof(ch));
+		if(i<=0)
+			goto err_01;
+		close(f);
+		c=strchr(ch,'\n');
+		if(j == 0)
+		{
+			if(c != NULL)
+				c[0]=0;
+			c=ch;
+		}
+		else //amd gpu
+			c++;
 		break;
-	case 1: //amd gputemp
-		break;
-	case 2://nvidia gputemp
-		break;
-	case 3://open source gputemp
+	case 3://nvidia gputemp
 		break;
 	default:
 		return 0;
 	}
-	f=open(ch,O_RDONLY);
+	f=open(c,O_RDONLY);
 	if(f<=0)
 		return 0;
 	i=read(f,tmp,sizeof(tmp));
